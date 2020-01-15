@@ -1,0 +1,119 @@
+<html>
+
+<head>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+
+    <script>
+        var api = '037075df7d1a4c83fc72bdf9d1049f43'; // API key for last.fm
+        var username = 'thatmitchcanter'; // last.fm username
+        var time = 2; // in seconds
+
+        // First, we set variables for the 'current' and 'previous' tracks
+        var previous = null;
+        var current = null;
+
+        // Next, we call the last.fm API and pull a JSON response with our latest 1 track 
+        setInterval(function() {
+            $.getJSON('https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=' + username + '&api_key=' + api + '&format=json&limit=1', function(json) {
+
+                // We need to isolate the track from the response for ease of use
+                track = json.recenttracks.track[0];
+
+                // Converting the 'current' track to a string allows us to use it as a comparative value
+                current = JSON.stringify(json);            
+
+                // IF the 'previous' track and the 'current' track are different, let's change our data (Album Cover, Name, and Artist)
+                if (previous && current && previous !== current) {
+
+                    $('#album').html('<img src="' + track.image[2]['#text'] + '" />');
+                    $('#track').html('<h2>' + track.name + '</h2>');
+                    $('#artist').html('<h4>' + track.artist['#text'] + '</h4>');
+                }
+                // This allows us to check the values upon subsequent track changes.
+                previous = current;
+            });                       
+        }, time * 1000);   
+    </script> 
+
+    <style>
+        html,body{
+           color: white;
+            margin: 0;
+            padding: 5px;
+        }
+
+        @font-face {
+        font-family: 'Visby Round CF';
+        src: url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Medium.woff2") format("woff2"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Medium.woff") format("woff"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Medium.ttf") format("truetype");
+        font-weight: 500;
+        font-style: normal; }
+
+        @font-face {
+        font-family: 'Visby Round CF';
+        src: url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Heavy.woff2") format("woff2"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Heavy.woff") format("woff"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Heavy.ttf") format("truetype");
+        font-weight: 900;
+        font-style: normal; }
+
+        @font-face {
+        font-family: 'Visby Round CF Extra';
+        src: url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-ExtraLight.woff2") format("woff2"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-ExtraLight.woff") format("woff"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-ExtraLight.ttf") format("truetype");
+        font-weight: 200;
+        font-style: normal; }
+
+        @font-face {
+        font-family: 'Visby Round CF Demi';
+        src: url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-DemiBold.woff2") format("woff2"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-DemiBold.woff") format("woff"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-DemiBold.ttf") format("truetype");
+        font-weight: 600;
+        font-style: normal; }
+
+        @font-face {
+        font-family: 'Visby Round CF';
+        src: url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Bold.woff2") format("woff2"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Bold.woff") format("woff"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Bold.ttf") format("truetype");
+        font-weight: bold;
+        font-style: normal; }
+
+        @font-face {
+        font-family: 'Visby Round CF';
+        src: url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Light.woff2") format("woff2"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Light.woff") format("woff"), url("https://mitchcanter.com/wp-content/themes/mitchcanter-2020/assets/fonts/VisbyRoundCF-Light.ttf") format("truetype");
+        font-weight: 300;
+        font-style: normal; }
+        
+        h2,h4{
+            font-family: "Visby Round CF";
+            padding: 0;
+            margin: 0;
+        }
+
+        #spotify_widget{
+            max-width: 200px;
+            color: white;
+            position: relative;
+            left: 0px; 
+            transition: .2s all ease;           
+        }
+        #spotify_widget.active{
+            left: 200px;
+        }
+
+        h2{font-size: .9rem; height: 40px;}
+        h4{font-size: .75rem}
+
+        #album img{
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+
+<body>  
+    <section id="spotify_widget">
+        <div id="album"></div>
+        <div id="artist"></div>
+        <div id="track"></div>
+    </section>
+
+</body>
+</html>
